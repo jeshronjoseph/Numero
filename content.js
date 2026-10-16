@@ -193,22 +193,14 @@
   function findCardContainer(resultEl) {
     const acEl = Array.from(document.querySelectorAll('div, span, button'))
       .find(el => el.children.length === 0 && el.textContent.trim() === 'AC' && el.offsetParent !== null);
-
-    if (acEl) {
-      let node = resultEl;
-      while (node && node !== document.body) {
-        if (node.contains(acEl)) return node;
-        node = node.parentElement;
-      }
-    }
+    if (!acEl) return null;
 
     let node = resultEl;
-    while (node.parentElement && node.parentElement !== document.body) {
-      const parent = node.parentElement;
-      if (Math.abs(parent.offsetWidth - node.offsetWidth) > 40) break;
-      node = parent;
+    while (node && node !== document.body) {
+      if (node.contains(acEl)) return node;
+      node = node.parentElement;
     }
-    return node;
+    return null;
   }
 
   // ---------- Finding the calculator result on the page ----------
@@ -406,7 +398,7 @@
 
   function scan() {
     const el = findResultElement();
-    if (el) render(el, false);
+    if (el && findCardContainer(el)) render(el, false);
   }
 
   function scheduleScan() {
